@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import List from './components/List';
+import escapeRegExp from 'escape-string-regexp'
+import * as api from './util/BooksAPI';
+import { Route } from 'react-router-dom';
+import Home from './scenes/Home';
+import Search from './scenes/Search';
 
 class App extends Component {
 
@@ -9,48 +13,73 @@ class App extends Component {
         this.state = {
             books: []
         }
-        this.updateStatus = this.updateTask.bind(this);
-    }
-
-    updateTask(value, book) {
-        let { books } = this.state
-        books = books.filter(_ => _.id !== book.id).concat({
-            ...book,
-            status: value
-        })
-        this.setState({books});
+        this.updateShelf = this.updateShelf.bind(this);
+        this.filterBooksForShelf = this.filterBooksForShelf.bind(this);
+        this.filterBooksForSearch = this.filterBooksForSearch.bind(this);
     }
 
     componentWillMount(){
-        const books = 
-        [
-            {id:0, title: 'Harry Potter', author: 'J. K. Rowling', bookCover: 'https://images-submarino.b2w.io/produtos/01/00/item/179/5/179547_1GG.jpg', status: 'read'},
-            {id:1, title: 'Harry Poha', author: 'Mc Maha', bookCover: 'uri', status: 'read'}
-        ]
-        this.setState({books})
+        let books = window.localStorage.getItem('books');
+        if(books == null){
+            api.getAll().then(result => {
+                this.setBooks(result);
+            });
+        }else{
+            this.setState({books: JSON.parse(books)})
+        }
     }
 
-    filterBooks(status){
+    setBooks(books){
+        window.localStorage.setItem('books', JSON.stringify(books));
+        this.setState({books});
+    }
+
+    updateShelf(value, book) {
+        let { books } = this.state;
+        api.update(book,value).then(result => {
+            books = books.filter(_ => _.id !== book.id).concat({
+                ...book,
+                shelf: value
+            })
+            this.setBooks(books);
+        })
+    }
+
+    filterBooksForShelf(shelf){
         const { books } = this.state;
-        let b = books.filter(_ => _.status === status);
+        let b = books.filter(_ => _.shelf === shelf);
+        return b;
+    }
+
+    filterAuthors(authors, search){
+        let a = false;
+        const match = new RegExp(escapeRegExp(search), 'i');
+        authors.map(author => {
+            if(match.test(author)){
+                a = true;
+            }
+        })
+        return a;
+    }
+
+    filterBooksForSearch(search){
+        const { books } = this.state;
+        const match = new RegExp(escapeRegExp(search), 'i');
+        
+        let b = books.filter(_ =>  match.test(_.title) || this.filterAuthors(_.authors, search))
+
         return b;
     }
 
     render() {
-        const types = [{status: 'read', title: 'Read'}, {status: 'currentlyReading', title: 'Currently reading'}, {status: 'wantToRead', title: 'Want to read'}]
         return (
             <div className="app">
-                <div className="list-books">
-                    <div className="list-books-title">
-                        <h1>MyReads</h1>
-                    </div>
-                    {types.map(type => (
-                        <List key={type.status} books={this.filterBooks(type.status)} title={type.title} updateStatus={this.updateStatus}/>
-                    ))}
-                    <div className="open-search">
-                        <a onClick={() => console.log(true)}>Add a book</a>
-                    </div>
-                </div>
+                <Route exact path="/" render={() => (
+                    <Home filterBooks={this.filterBooksForShelf} updateShelf={this.updateShelf} />
+                )}/>
+                <Route path="/search" render={() => (
+                    <Search filterBooks={this.filterBooksForSearch} updateShelf={this.updateShelf} />
+                )}/>
             </div>
         );
     }

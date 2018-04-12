@@ -12,7 +12,7 @@ describe('<List />', () => {
       expect(mount(<List />))
    })
 
-   const books = [{id:0, title: 'Harry Potter', author: 'J. K. Rowling', bookCover: 'uri', status: 'read'}]
+   const books = [{id:0, title: 'Harry Potter', authors: ['J. K. Rowling'], imageLinks: {'smallThumbnail': 'uri'}, shelf: 'read'}]
    it('renders list items', () => {
       const component = mount(<List books={books} />);
 
@@ -20,9 +20,9 @@ describe('<List />', () => {
    })
 
    it('change status', () => {
-      const updateStatus = jest.fn();
-      const component = mount(<List books={books} updateStatus={updateStatus}/>)
+      const updateShelf = jest.fn();
+      const component = mount(<List books={books} updateShelf={updateShelf}/>)
       component.find('select').simulate('change')
-      expect(updateStatus).toHaveBeenCalledTimes(1)
+      expect(updateShelf).toHaveBeenCalledTimes(1)
    })
 })
