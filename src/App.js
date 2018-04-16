@@ -5,6 +5,7 @@ import * as api from './util/BooksAPI';
 import { Route } from 'react-router-dom';
 import Home from './scenes/Home';
 import Search from './scenes/Search';
+import Book from './scenes/Book';
 
 class App extends Component {
 
@@ -63,6 +64,10 @@ class App extends Component {
     }
 
     filterBooksForSearch(search){
+        // caso o input da pesquisa esteja vazio o metodo retorna falso
+        if(search === ''){
+            return false;
+        }
         const { books } = this.state;
         const match = new RegExp(escapeRegExp(search), 'i');
         
@@ -79,6 +84,9 @@ class App extends Component {
                 )}/>
                 <Route path="/search" render={() => (
                     <Search filterBooks={this.filterBooksForSearch} updateShelf={this.updateShelf} />
+                )}/>
+                <Route path="/book/:bookId" render={(routeProps) => (
+                    <Book routeProps={routeProps}/>
                 )}/>
             </div>
         );
