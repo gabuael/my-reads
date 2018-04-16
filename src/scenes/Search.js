@@ -21,7 +21,7 @@ class Search extends Component {
         return(
             <div className="search-books">
                 <div className="search-books-bar">
-                    <a className="close-search" onClick={() => console.log(true)}>Close</a>
+                    <Link className="close-search" to='/'>Close</Link>
                     <div className="search-books-input-wrapper">
                         <input type="text" placeholder="Search by title or author" value={this.state.search} onChange={(v) => this.onChangeSearch(v.target.value)}/>
                     </div>

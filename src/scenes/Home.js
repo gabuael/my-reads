@@ -14,7 +14,7 @@ const Home = ({filterBooks, updateShelf}) => {
                 <List key={type.shelf} books={filterBooks(type.shelf)} title={type.title} updateShelf={updateShelf}/>
             ))}
             <div className="open-search">
-                <a onClick={() => console.log(true)}>Add a book</a>
+                <Link to='/search'>Close</Link>
             </div>
         </div>
     )
