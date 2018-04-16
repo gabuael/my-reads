@@ -19,7 +19,7 @@ describe('<App />', () => {
 
     wrapper
     .setState({
-      books: [ {id:0, title: 'Harry Poha', author: 'Mc Maha', bookCover: 'uri', shelf: 'wantToRead'}]
+      books: [{id:0, title: 'Harry Potter', authors: ['J. K. Rowling'], imageLinks: {'smallThumbnail': 'uri'}, shelf: 'read'}]
     })
     .find('select')
     .simulate('change', {target: {value: "read"}})

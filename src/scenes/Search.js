@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import '../App.css';
 import List from '../components/List';
+import If from '../components/If';
 import { Link } from 'react-router-dom';
 
 class Search extends Component {
@@ -26,9 +27,11 @@ class Search extends Component {
                         <input type="text" placeholder="Search by title or author" value={this.state.search} onChange={(v) => this.onChangeSearch(v.target.value)}/>
                     </div>
                 </div>
-                <div className="search-books-results">
-                    <List books={filterBooks(this.state.search)} title={'search'} updateShelf={updateShelf}/>
-                </div>
+                <If test={this.state.search !== ''}>
+                    <div className="search-books-results">
+                        <List books={filterBooks(this.state.search)} title={'search'} updateShelf={updateShelf}/>
+                    </div>
+                </If>
             </div>
         )
     }
