@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import escapeRegExp from 'escape-string-regexp'
 import * as api from './util/BooksAPI';
 import { Route } from 'react-router-dom';
 import Home from './scenes/Home';
@@ -14,8 +13,7 @@ class App extends Component {
             books: []
         }
         this.updateShelf = this.updateShelf.bind(this);
-        this.filterBooksForShelf = this.filterBooksForShelf.bind(this);
-        this.filterBooksForSearch = this.filterBooksForSearch.bind(this);
+        this.filterBooks = this.filterBooks.bind(this);
     }
 
     componentDidMount(){
@@ -27,7 +25,7 @@ class App extends Component {
 
     updateShelf(value, book) {
         let { books } = this.state;
-        api.update(book,value).then(result => {
+        api.update(book,value).then(() => {
             books = books.filter(_ => _.id !== book.id).concat({
                 ...book,
                 shelf: value
@@ -36,29 +34,9 @@ class App extends Component {
         })
     }
 
-    filterBooksForShelf(shelf){
+    filterBooks(shelf){
         const { books } = this.state;
         let b = books.filter(_ => _.shelf === shelf);
-        return b;
-    }
-
-    filterAuthors(authors, search){
-        let a = false;
-        const match = new RegExp(escapeRegExp(search), 'i');
-        authors.map(author => {
-            if(match.test(author)){
-                a = true;
-            }
-        })
-        return a;
-    }
-
-    filterBooksForSearch(search){
-        const { books } = this.state;
-        const match = new RegExp(escapeRegExp(search), 'i');
-        
-        let b = books.filter(_ =>  match.test(_.title) || this.filterAuthors(_.authors, search))
-
         return b;
     }
 
@@ -66,10 +44,10 @@ class App extends Component {
         return (
             <div className="app">
                 <Route exact path="/" render={() => (
-                    <Home filterBooks={this.filterBooksForShelf} updateShelf={this.updateShelf} />
+                    <Home filterBooks={this.filterBooks} updateShelf={this.updateShelf} />
                 )}/>
                 <Route path="/search" render={() => (
-                    <Search filterBooks={this.filterBooksForSearch} updateShelf={this.updateShelf} />
+                    <Search books={this.state.books} updateShelf={this.updateShelf} />
                 )}/>
             </div>
         );

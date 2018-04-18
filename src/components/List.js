@@ -3,6 +3,7 @@ import If from './If';
 import '../App.css';
 
 const List = ({books = [], title, updateShelf}) => {
+    // console.log(books);
     return(
         <div className="list-books-content">
             <div className="bookshelf">
@@ -17,10 +18,12 @@ const List = ({books = [], title, updateShelf}) => {
                                     <div className="book-top">
                                         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks && book.imageLinks.smallThumbnail})` }}></div>
                                         <div className="book-shelf-changer">
-                                            <select value={book.shelf} onChange={(e) => updateShelf(e.target.value, book)}>
+                                            <select value={book.shelf ? book.shelf : "none"} onChange={(e) => updateShelf(e.target.value, book)}>
+                                                <option disabled>Move to...</option>
                                                 <option value="currentlyReading">Currently reading</option>
                                                 <option value="wantToRead">Want to read</option>
                                                 <option value="read">Read</option>
+                                                <option value="none">None</option>
                                             </select>
                                         </div>
                                     </div>
