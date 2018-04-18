@@ -18,21 +18,12 @@ class App extends Component {
         this.filterBooksForSearch = this.filterBooksForSearch.bind(this);
     }
 
-    componentWillMount(){
-        let books = window.localStorage.getItem('books');
-        if(books == null){
-            api.getAll().then(result => {
-                this.setBooks(result);
-            });
-        }else{
-            this.setState({books: JSON.parse(books)})
-        }
+    componentDidMount(){
+        api.getAll().then(books => {
+            this.setState({books});
+        });
     }
 
-    setBooks(books){
-        window.localStorage.setItem('books', JSON.stringify(books));
-        this.setState({books});
-    }
 
     updateShelf(value, book) {
         let { books } = this.state;
@@ -41,7 +32,7 @@ class App extends Component {
                 ...book,
                 shelf: value
             })
-            this.setBooks(books);
+            this.setState({books});
         })
     }
 
