@@ -4,6 +4,7 @@ import * as api from './util/BooksAPI';
 import { Route } from 'react-router-dom';
 import Home from './scenes/Home';
 import Search from './scenes/Search';
+import Book from './scenes/Book';
 
 class App extends Component {
 
@@ -48,6 +49,9 @@ class App extends Component {
                 )}/>
                 <Route path="/search" render={() => (
                     <Search books={this.state.books} updateShelf={this.updateShelf} />
+                )}/>
+                <Route path="/book/:bookId" render={(routeProps) => (
+                    <Book routeProps={routeProps}/>
                 )}/>
             </div>
         );
